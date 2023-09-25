@@ -17,13 +17,25 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
 
 migrate = Migrate(app, db)
-
 db.init_app(app)
 
+api=Api(app)
 
 @app.route('/')
 def home():
-    return ''
+    return 'Hello Campers!!'
+
+@app.route('/campers', methods=['GET'])
+def campers():
+    if request.method == 'GET':
+        campers=Camper.query.all()
+        campers_list=[camper.to_dict() for camper in campers]
+        response=make_response(
+            jsonify(campers_list),
+            200
+        )
+        return response
+        
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
